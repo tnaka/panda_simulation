@@ -9,6 +9,9 @@
     <arg name="debug" default="false" />
     <arg name="load_gripper" default="true" />
 
+    <!-- MoveIt arguments -->
+    <arg name="pipeline" default="ompl" />
+
     <!--launch GAZEBO with own world configuration -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
         <!-- <arg name="world_name" value="$(find robotics_assisted_tomography)/worlds/tomography.world"/> -->
@@ -39,6 +42,7 @@
     </include>
     <include file="$(find panda_moveit_config)/launch/move_group.launch">
         <arg name="load_gripper" value="$(arg load_gripper)" />
+        <arg name="pipeline" value="$(arg pipeline)" />
     </include>
     <group if="$(arg gui)">
         <include file="$(find panda_moveit_config)/launch/moveit_rviz.launch" />
@@ -50,9 +54,11 @@
     <node pkg="panda_simulation" type="robot_control_node" name="robot_control_node" output="screen" />
 
     <!-- load (not start!) custom joint position controller -->
-    <node pkg="controller_manager" type="spawner" name="joint_position_launcher" args="--stopped joint_position_controller" />
+    <!-- TODO: Make it compatible with effort controller -->
+    <node pkg="controller_manager" type="spawner" name="joint_position_launcher" args="--stopped joint_position_controller" if="false" />
 
     <!-- run custom node for automatic intialization -->
-    <node pkg="panda_simulation" type="robot_state_initializer_node" name="robot_state_initializer_node" />
+    <!-- TODO: Make it compatible with effort controller -->
+    <node pkg="panda_simulation" type="robot_state_initializer_node" name="robot_state_initializer_node" if="false" />
 
 </launch>
